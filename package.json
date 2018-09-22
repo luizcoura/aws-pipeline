@@ -1,0 +1,23 @@
+{
+  "name": "aws-pipeline",
+  "version": "1.0.0",
+  "description": "aws-pipeline",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luizcoura/aws-pipeline.git"
+  },
+  "author": "Luiz Coura",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/luizcoura/aws-pipeline/issues"
+  },
+  "homepage": "https://github.com/luizcoura/aws-pipeline#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
