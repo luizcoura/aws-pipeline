@@ -4,6 +4,7 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
+      - echo ${AWS_KEY}
       - printf "${AWS_KEY}\n${AWS_SEC}\n${AWS_REG}\n${AWS_OUT}\n" | aws configure --profile ${AWS_PRF}
       - $(aws ecr get-login --no-include-email --region ${AWS_REG} --profile ${AWS_PRF})
   build:
