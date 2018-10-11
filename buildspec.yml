@@ -4,24 +4,15 @@ phases:
   pre_build:
     commands:
       - echo Logging in to Amazon ECR...
-      - aws --version
-      - $(aws ecr get-login --no-include-email --region us-east-1)
-      - REPOSITORY_URI=545199448870.dkr.ecr.us-east-1.amazonaws.com/aws-pipeline
-      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - IMAGE_TAG=${COMMIT_HASH:=latest}
+      - printf "${AWS_KEY}\n${AWS_SEC}\n${AWS_REG}\n${AWS_OUT}\n" | aws configure --profile ${AWS_PRF}
+      - $(aws ecr get-login --no-include-email --region ${AWS_REG} --profile ${AWS_PRF})
   build:
     commands:
       - echo Build started on `date`
       - echo Building the Docker image...          
-      - docker build -t $REPOSITORY_URI:latest .
-      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+      - docker build -t 545199448870.dkr.ecr.us-east-1.amazonaws.com/aws-pipeline:latest .
   post_build:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
-      - docker push $REPOSITORY_URI:latest
-      - docker push $REPOSITORY_URI:$IMAGE_TAG
-      - echo Writing image definitions file...
-      - printf '[{"name":"hello-world","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
-artifacts:
-    files: imagedefinitions.json
+      - docker push 545199448870.dkr.ecr.us-east-1.amazonaws.com/aws-pipeline:latest
