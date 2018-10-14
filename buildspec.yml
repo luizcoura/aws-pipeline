@@ -17,3 +17,6 @@ phases:
       - echo Build completed on `date`
       - echo Pushing the Docker images...
       - docker push 545199448870.dkr.ecr.us-east-1.amazonaws.com/aws-pipeline:latest
+      - printf '[{"name":"aws-pipeline","imageUri":"%s"}]' 545199448870.dkr.ecr.us-east-1.amazonaws.com/aws-pipeline:latest > imagedefinitions.json
+artifacts:
+    files: imagedefinitions.json
