@@ -3,20 +3,14 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo Logging in to Amazon ECR...
-      - echo ${AWS_KEY}
-      - printf "${AWS_KEY}\n${AWS_SEC}\n${AWS_REG}\n${AWS_OUT}\n" | aws configure --profile ${AWS_PRF}
-      - $(aws ecr get-login --no-include-email --region ${AWS_REG} --profile ${AWS_PRF})
+      - echo pre_build
+      - git clone git@github.com:luizcoura/aws-pipeline.git
+      - cd aws-pipeline
   build:
     commands:
-      - echo Build started on `date`
-      - echo Building the Docker image...          
-      - docker build -t 545199448870.dkr.ecr.us-east-1.amazonaws.com/aws-pipeline:latest .
+      - docker build -t 775763617068.dkr.ecr.us-east-1.amazonaws.com/build-test:${CODEBUILD_BUILD_ID}
+      - git branch -b release.${CODEBUILD_BUILD_ID}
+      - git push origin release.${CODEBUILD_BUILD_ID}
   post_build:
     commands:
-      - echo Build completed on `date`
-      - echo Pushing the Docker images...
-      - docker push 545199448870.dkr.ecr.us-east-1.amazonaws.com/aws-pipeline:latest
-      - printf '[{"name":"aws-pipeline","imageUri":"%s"}]' 545199448870.dkr.ecr.us-east-1.amazonaws.com/aws-pipeline:latest > imagedefinitions.json
-artifacts:
-    files: imagedefinitions.json
+      - echo post_build
