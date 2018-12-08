@@ -4,7 +4,7 @@ phases:
   pre_build:
     commands:
       - echo pre_build
-      - git clone git@github.com:luizcoura/aws-pipeline.git
+      - git clone https://${GIT_USER}:${GIT_PASS}@github.com/luizcoura/aws-pipeline.git
       - cd aws-pipeline
   build:
     commands:
