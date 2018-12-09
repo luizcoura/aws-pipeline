@@ -9,7 +9,7 @@ IMAGE_TAG=${COMMIT_HASH:=latest}
 docker build -t $REPOSITORY_URI:latest .
 
 CODE=$?
-[ $CODE -ne 0 ] && { echo "Docker image build error"; exit $CODE; }
+[ $CODE -ne 0 ] && { echo "ERROR: Docker image build error"; exit $CODE; }
 
 docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
 
@@ -20,7 +20,7 @@ VERSION=$(grep '"version":' package.json | awk -F'"' '{print $4}')
 TEST=$(echo $VERSION | grep -Po "^(\d+\.)+\d+$" )
 
 CODE=$?
-[ $CODE -ne 0 ] && { echo "Version $VERSION: pattern matching error (d or d.d or d.d.d where d equals digit)"; exit $CODE; }
+[ $CODE -ne 0 ] && { echo "ERROR: Version $VERSION pattern matching error (Version must be: d or d.d or d.d.d where d equals digit)"; exit $CODE; }
 
 # push version release to git if it do not exists and push docker image to docker repository
 git ls-remote --heads 2>/dev/null | grep "refs/heads/$VERSION"
@@ -32,7 +32,13 @@ then
 
   git checkout -b $VERSION
 
+  CODE=$?
+  [ $CODE -ne 0 ] && { echo "ERROR: Git branch $VERSION already exists"; exit $CODE; }
+
   git push origin $VERSION
+
+  CODE=$?
+  [ $CODE -ne 0 ] && { echo "ERROR: Git push error"; exit $CODE; }
 fi
 
 docker push $REPOSITORY_URI:latest
