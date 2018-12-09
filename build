@@ -1,5 +1,9 @@
 #!/bin/bash
 
+echo "aqui"
+cat ~/.netrc
+echo "aqui"
+
 REPOSITORY_URI="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${REPOSITORY_NAME}"
 
 COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)

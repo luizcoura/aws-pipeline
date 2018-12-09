@@ -1,6 +1,6 @@
 {
   "name": "aws-pipeline",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "aws-pipeline",
   "main": "app.js",
   "scripts": {
