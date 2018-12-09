@@ -4,6 +4,9 @@ env:
   variables:
     AWS_ACCOUNT_ID: "775763617068"
     REPOSITORY_NAME: "build-test"
+  parameter-store:
+    GIT_USER: "gituser"
+    GIT_PASS: "gitpass"
 
 phases:
   pre_build:
