@@ -1,0 +1,41 @@
+#!/bin/bash
+
+REPOSITORY_URI="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${REPOSITORY_NAME}"
+
+COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+IMAGE_TAG=${COMMIT_HASH:=latest}
+
+# build docker image based on VERSION
+docker build -t $REPOSITORY_URI:latest .
+
+CODE=$?
+[ $CODE -ne 0 ] && { echo "Docker image build error"; exit $CODE; }
+
+docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+
+# VERSION property
+VERSION=$(grep '"version":' package.json | awk -F'"' '{print $4}')
+
+# test VERSION property pattern (d or d.d or d.d.d where d equals digit)
+TEST=$(echo $VERSION | grep -Po "^(\d+\.)+\d+$" )
+
+CODE=$?
+[ $CODE -ne 0 ] && { echo "Version $VERSION: pattern matching error (d or d.d or d.d.d where d equals digit)"; exit $CODE; }
+
+# push version release to git if it do not exists and push docker image to docker repository
+git ls-remote --heads 2>/dev/null | grep "refs/heads/$VERSION"
+
+if [ $? -ne 0 ];
+then
+  docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$VERSION
+  docker push $REPOSITORY_URI:$VERSION
+
+  git checkout -b $VERSION
+
+  git push origin $VERSION
+fi
+
+docker push $REPOSITORY_URI:latest
+docker push $REPOSITORY_URI:$IMAGE_TAG
+
+exit 0
