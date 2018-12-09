@@ -12,9 +12,9 @@ phases:
       - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
 
       # git credentials 
-      - echo “machine github.com” >> ~/.netrc
-      - echo “login $GIT_USER” >> ~/.netrc
-      - echo “password $GIT_PASS” >> ~/.netrc
+      - echo "machine github.com" >> ~/.netrc
+      - echo "login $GIT_USER" >> ~/.netrc
+      - echo "password $GIT_PASS" >> ~/.netrc
 
       # clone repository
       - git clone https://github.com/luizcoura/aws-pipeline.git
