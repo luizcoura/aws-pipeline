@@ -1,16 +1,28 @@
 version: 0.2
 
+env:
+  variables:
+    AWS_ACCOUNT_ID: "775763617068"
+    REPOSITORY_NAME: "build-test"
+
 phases:
   pre_build:
     commands:
-      - echo pre_build
-      - git clone git@github.com:luizcoura/aws-pipeline.git
+      # docker repository login
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+
+      # git credentials 
+      - echo "machine github.com" >> ~/.netrc
+      - echo "login $GIT_USER" >> ~/.netrc
+      - echo "password $GIT_PASS" >> ~/.netrc
+
+      # clone repository
+      - git clone https://github.com/luizcoura/aws-pipeline.git
       - cd aws-pipeline
   build:
     commands:
-      - docker build -t 775763617068.dkr.ecr.us-east-1.amazonaws.com/build-test:${CODEBUILD_BUILD_ID}
-      - git branch -b release.${CODEBUILD_BUILD_ID}
-      - git push origin release.${CODEBUILD_BUILD_ID}
+      # where the magic happens
+      - bash build
   post_build:
     commands:
       - echo post_build

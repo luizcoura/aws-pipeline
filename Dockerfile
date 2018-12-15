@@ -5,7 +5,7 @@ WORKDIR /app
 COPY package*.json ./
 COPY app.js ./
 
-RUN npm install
+RUN yarn
 
 EXPOSE 8080
 CMD [ "npm", "start" ]
